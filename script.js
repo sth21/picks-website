@@ -5,44 +5,31 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (event) => {
         event.preventDefault();
 
-        const file = fileInput.files[0];
-
-        if (!file) {
-            alert("Select a file");
+        if (!fileInput) {
+            alert("Enter picks");
             return;
         }
 
-        if (file.type !== "text/plain") {
-            alert("Only .txt files allowed");
-            return;
-        }
+        let total = 0;
+        let correct = 0;
 
-        const reader = new FileReader();
+        const textContent = fileInput.value;
 
-        reader.readAsText(file);
+        const lines = textContent.split(/\r?\n/);
 
-        reader.onload = () => {
-            let total = 0;
-            let correct = 0;
-
-            const textContent = reader.result;
-
-            const lines = textContent.split(/\r?\n/);
-
-            lines.forEach((line) => {
-                const terminator = line.charAt(line.length - 1);
+        lines.forEach((line) => {
+            const terminator = line.charAt(line.length - 1);
         
-                if (terminator === "✅") {
-                    correct++; total++;
-                } else if (terminator === "❌") {
-                    total++;
-                }
-            });
+            if (terminator === "✅") {
+                correct++; total++;
+            } else if (terminator === "❌") {
+                total++;
+            }
+        });
 
-            document.getElementById("correct").textContent = `Correct: ${correct}`;
-            document.getElementById("incorrect").textContent = `Incorrect: ${total - correct}`;
-            document.getElementById("total").textContent = `Total: ${total}`;
-            document.getElementById("percentage").textContent = `Percentage: ${(correct / total).toFixed(2)}`;
-        }
+        document.getElementById("correct").textContent = `Correct: ${correct}`;
+        document.getElementById("incorrect").textContent = `Incorrect: ${total - correct}`;
+        document.getElementById("total").textContent = `Total: ${total}`;
+        document.getElementById("percentage").textContent = `Percentage: ${(correct / total).toFixed(2)}`;
     });
 });
